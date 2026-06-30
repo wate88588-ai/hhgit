@@ -1,0 +1,157 @@
+      $("#rankHint").textContent = rankTypes.find((type) => type.key === state.rankType).hint;
+    }
+    function renderCategoryGrid() {
+      $("#categoryGrid").innerHTML = categories.map((category) => `
+        <button class="category ${state.rankCategory === category ? "active" : ""}" type="button" data-rank-category="${category}">
+          ${category}
+        </button>
+      `).join("");
+    }
+    function renderRankList() {
+      const list = sortGames(filterByCategory(games, state.rankCategory), state.rankType);
+      $("#rankList").innerHTML = list.map((game, index) => {
+        const trendClass = state.rankType === "days" ? "blue" : state.rankType === "rating" ? "red" : "";
+        return `
+          <article class="rank-row" data-open="${game.id}">
+            <div class="rank-no">${index + 1}</div>
+            ${gameLogo(game, "mini-logo")}
+            <div class="rank-copy">
+              <b>${game.name}</b>
+              <span>${game.category} · ${game.tags.slice(0, 2).join(" · ")} · ${formatValue(game, state.rankType)}</span>
+            </div>
+            <span class="trend ${trendClass}">${formatValue(game, state.rankType).replace("销量", "").replace("下载", "")}</span>
+          </article>
+        `;
+      }).join("");
+    }
+    function renderFavorites() {
+      const favoriteGames = games.filter((game) => state.favorites.has(game.id));
+      $("#favCount").textContent = favoriteGames.length;
+      $("#favoriteList").innerHTML = favoriteGames.length ? favoriteGames.map((game, index) => `
+        <article class="rank-row" data-open="${game.id}">
+          <div class="rank-no">${index + 1}</div>
+          ${gameLogo(game, "mini-logo")}
+          <div class="rank-copy">
+            <b>${game.name}</b>
+            <span>${game.category} · ${game.rating}%好评 · ${game.sales}万销量</span>
+          </div>
+          <span class="trend red">已藏</span>
+        </article>
+      `).join("") : `<div class="empty">还没有收藏游戏，点开游戏详情可以收藏。</div>`;
+    }
+    function renderAll() {
+      renderLogoGrid();
+      renderDiscoverChips();
+      renderGameList();
+      renderRankTabs();
+      renderCategoryGrid();
+      renderRankList();
+      renderFavorites();
+    }
+    function switchPage(page) {
+      state.page = page;
+      $$(".page").forEach((section) => section.classList.toggle("active", section.id === `page-${page}`));
+      $$(".tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.page === page));
+      const titles = {
+        home: ["游戏精选", "漫画 App 专属推荐", "游"],
+        discover: ["发现游戏", "横图列表浏览", "发"],
+        rank: ["游戏榜单", "多维排行筛选", "榜"],
+        mine: ["我的游戏", "收藏与礼包", "我"]
+      };
+      $("#pageTitle").textContent = titles[page][0];
+      $("#pageSub").textContent = titles[page][1];
+      $("#brandMark").textContent = titles[page][2];
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    function openSheet(gameId) {
+      const game = games.find((item) => item.id === Number(gameId));
+      if (!game) return;
+      state.activeGame = game;
+      $("#sheetLogo").className = `game-logo ${game.logo}`;
+      $("#sheetLogo").textContent = game.mark;
+      $("#sheetTitle").textContent = game.name;
+      $("#sheetMeta").textContent = `${game.category} · ${game.sales}万销量 · ${game.rating}%好评`;
+      $("#sheetDesc").textContent = game.desc;
+      $("#sheetTags").innerHTML = tagHtml(game.tags);
+      $("#favoriteBtn").textContent = state.favorites.has(game.id) ? "取消收藏" : "收藏";
+      $("#sheetMask").classList.add("show");
+    }
+    function closeSheet() {
+      $("#sheetMask").classList.remove("show");
+    }
+    let toastTimer = null;
+    function toast(message) {
+      const el = $("#toast");
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 1600);
+    }
+    document.addEventListener("click", (event) => {
+      const tab = event.target.closest("[data-page]");
+      if (tab) switchPage(tab.dataset.page);
+      const jump = event.target.closest("[data-jump]");
+      if (jump) switchPage(jump.dataset.jump);
+      const discoverCategory = event.target.closest("[data-discover-category]");
+      if (discoverCategory) {
+        state.discoverCategory = discoverCategory.dataset.discoverCategory;
+        renderDiscoverChips();
+        renderGameList();
+      }
+      const rankType = event.target.closest("[data-rank-type]");
+      if (rankType) {
+        state.rankType = rankType.dataset.rankType;
+        renderRankTabs();
+        renderRankList();
+      }
+      const rankCategory = event.target.closest("[data-rank-category]");
+      if (rankCategory) {
+        state.rankCategory = rankCategory.dataset.rankCategory;
+        renderCategoryGrid();
+        renderRankList();
+      }
+      const open = event.target.closest("[data-open]");
+      if (open) openSheet(open.dataset.open);
+    });
+    $("#searchInput").addEventListener("input", (event) => {
+      state.search = event.target.value;
+      renderGameList();
+    });
+    $("#searchBtn").addEventListener("click", () => {
+      const value = $("#searchInput").value.trim();
+      toast(value ? `已搜索：${value}` : "请输入搜索内容");
+    });
+    $("#refreshBtn").addEventListener("click", () => {
+      if (state.page === "rank") {
+        state.rankType = "rise";
+        renderRankTabs();
+        renderRankList();
+        toast("已切换到飙升榜");
+      } else {
+        toast("推荐内容已刷新");
+      }
+    });
+    $("#sheetMask").addEventListener("click", (event) => {
+      if (event.target.id === "sheetMask") closeSheet();
+    });
+    $("#favoriteBtn").addEventListener("click", () => {
+      if (!state.activeGame) return;
+      if (state.favorites.has(state.activeGame.id)) {
+        state.favorites.delete(state.activeGame.id);
+        toast("已取消收藏");
+      } else {
+        state.favorites.add(state.activeGame.id);
+        toast("已收藏到我的游戏");
+      }
+      $("#favoriteBtn").textContent = state.favorites.has(state.activeGame.id) ? "取消收藏" : "收藏";
+      renderFavorites();
+    });
+    $("#playBtn").addEventListener("click", () => {
+      if (!state.activeGame) return;
+      toast(`正在进入：${state.activeGame.short}`);
+      closeSheet();
+    });
+    renderAll();
+  </script>
+</body>
+</html>
