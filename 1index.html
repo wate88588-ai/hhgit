@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1728" />
+  <title>墨光 · 故事宇宙</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="desktop-note">在故事里，遇见另一个世界。</div>
+  <main class="app-shell">
+    <header class="topbar">
+      <button class="brand" data-go="home" aria-label="返回首页">
+        <span class="brand-mark">墨</span><span>墨光</span>
+      </button>
+      <div class="top-actions">
+        <button class="icon-btn" id="searchBtn" aria-label="搜索">⌕</button>
+        <button class="avatar" data-go="profile" aria-label="个人中心">岚</button>
+      </div>
+    </header>
+
+    <div class="search-panel" id="searchPanel">
+      <span>⌕</span><input id="searchInput" placeholder="搜索小说、漫画、影片" />
+      <button id="closeSearch">取消</button>
+    </div>
+
+    <nav class="category-nav" id="categoryNav" aria-label="内容分类">
+      <button class="active" data-category="recommend">推荐</button>
+      <button data-category="novel">小说</button>
+      <button data-category="comic">漫画</button>
+      <button data-category="film">影片</button>
+    </nav>
+
+    <section id="homePage" class="page active">
+      <div class="subnav" id="subnav">
+        <button class="active">精选</button><button>热榜</button><button>新作</button><button>完结</button>
+      </div>
+      <div id="contentFeed"></div>
+    </section>
+
+    <section id="favoritesPage" class="page">
+      <div class="page-heading">
+        <div><span class="eyebrow">MY LIBRARY</span><h1>我的收藏</h1></div>
+        <button class="text-btn" id="editFavorites">管理</button>
+      </div>
+      <div class="favorite-tabs">
+        <button class="active" data-filter="all">全部 <span id="favCount">0</span></button>
+        <button data-filter="novel">小说</button><button data-filter="comic">漫画</button><button data-filter="film">影片</button>
+      </div>
+      <div id="favoritesList" class="favorites-list"></div>
+    </section>
+
+    <section id="profilePage" class="page">
+      <div class="profile-hero">
+        <div class="profile-row">
+          <div class="big-avatar">岚</div>
+          <div><h1>晚上好，岚</h1><p>在墨光的第 128 天</p></div>
+          <button class="gear">⚙</button>
+        </div>
+        <div class="stats">
+          <div><strong>36</strong><span>已读</span></div><div><strong>12</strong><span>收藏</span></div><div><strong>8.5h</strong><span>本周</span></div>
+        </div>
+      </div>
+      <div class="membership-card">
+        <div class="member-shine"></div>
+        <span class="member-label">INKLIGHT PLUS</span>
+        <h2>把整个故事宇宙<br />装进口袋</h2>
+        <p>全场畅读 · 高清影片 · 抢先更新</p>
+        <button id="openPaywall">立即开通 <span>→</span></button>
+      </div>
+      <div class="menu-list">
+        <button><span>◷</span><b>观看记录</b><i>›</i></button>
+        <button><span>⌁</span><b>离线下载</b><i>›</i></button>
+        <button><span>◈</span><b>阅读偏好</b><i>›</i></button>
+        <button><span>?</span><b>帮助与反馈</b><i>›</i></button>
+      </div>
+    </section>
+
+    <nav class="bottom-nav">
+      <button class="active" data-go="home"><span class="nav-icon">⌂</span><small>首页</small></button>
+      <button data-go="favorites"><span class="nav-icon">♡</span><small>收藏</small><em id="favBadge">0</em></button>
+      <button data-go="profile"><span class="nav-icon">◉</span><small>我的</small></button>
+    </nav>
+  </main>
+
+  <div class="modal-backdrop" id="detailModal">
+    <article class="detail-sheet">
+      <button class="sheet-close" data-close="detailModal">×</button>
+      <div id="detailCover" class="detail-cover cover"></div>
+      <div class="detail-content">
+        <span class="eyebrow" id="detailType"></span><h2 id="detailTitle"></h2>
+        <p id="detailMeta"></p>
+        <div class="detail-stats"><span id="detailViews">🔥 68.4万观看</span><span>★ 8.7</span><span id="detailStatus">连载中</span></div>
+        <h3 class="detail-subtitle">简介</h3><p class="description" id="detailDesc"></p>
+        <div class="chapter-card" id="chapterCard"></div>
+        <div class="detail-actions">
+          <button class="primary" id="startReading">开始阅读</button>
+          <button class="save-detail" id="saveDetail">♡</button>
+        </div>
+        <div class="comments-head"><h3>评论区 <small id="commentCount">2.3万</small></h3><button id="writeComment">写评论… ✎</button></div>
+        <div class="comment-compose" id="commentCompose">
+          <input id="commentInput" maxlength="80" placeholder="说说你的感受…" />
+          <button id="sendComment">发布</button>
+        </div>
+        <div id="commentsList" class="comments-list"></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="modal-backdrop" id="paywallModal">
+    <article class="paywall-sheet">
+      <button class="sheet-close" data-close="paywallModal">×</button>
+      <span class="pay-crown">✦</span><span class="eyebrow">INKLIGHT PLUS</span>
+      <h2>让好故事，不被打断</h2>
+      <p class="pay-sub">小说、漫画、影片全场通行</p>
+      <div class="perks"><span>✓ 全库畅读</span><span>✓ 1080P 影片</span><span>✓ 无广告</span></div>
+      <div class="plans">
+        <button class="plan" data-plan="month"><span>连续包月</span><strong>¥18<small>/月</small></strong></button>
+        <button class="plan selected" data-plan="year"><i>最划算</i><span>连续包年</span><strong>¥148<small>/年</small></strong><em>每月仅 ¥12.3</em></button>
+      </div>
+      <button class="pay-button" id="payButton">确认开通 · ¥148/年</button>
+      <small class="terms">开通即代表同意《会员服务协议》 · 可随时取消</small>
+    </article>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
