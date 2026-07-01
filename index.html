@@ -1,1178 +1,129 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>游戏推荐</title>
-  <style>
-    :root {
-      --gold: #ffd36a;
-      --gold-2: #f6a91d;
-      --orange: #ff6b2c;
-      --ink: #17140f;
-      --muted: #7f6b4d;
-      --panel: rgba(255, 255, 255, 0.78);
-      --line: rgba(42, 28, 9, 0.12);
-      --dark: #211a11;
-      --green: #24a66f;
-      --blue: #3978e8;
-      --red: #e34b4b;
-      --shadow: 0 14px 32px rgba(93, 57, 12, 0.12);
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html,
-    body {
-      margin: 0;
-      min-height: 100%;
-      font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at 12% 0%, rgba(255, 211, 106, 0.55), transparent 32%),
-        linear-gradient(160deg, #fff9ec 0%, #ffe6b8 46%, #ff8d4a 100%);
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .app {
-      width: min(100vw, 430px);
-      min-height: 100vh;
-      position: relative;
-      background:
-        linear-gradient(180deg, rgba(255, 250, 240, 0.96), rgba(255, 245, 224, 0.96)),
-        #fff6df;
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55);
-      overflow: hidden;
-    }
-
-    .app::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      width: min(100vw, 430px);
-      margin: auto;
-      pointer-events: none;
-      background:
-        linear-gradient(135deg, rgba(255, 211, 106, 0.22), transparent 34%),
-        linear-gradient(315deg, rgba(255, 107, 44, 0.14), transparent 38%);
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      padding: calc(12px + env(safe-area-inset-top)) 16px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      backdrop-filter: blur(18px);
-      background: rgba(255, 248, 234, 0.86);
-      border-bottom: 1px solid rgba(255, 217, 141, 0.5);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      min-width: 0;
-      gap: 10px;
-    }
-
-    .brand-mark,
-    .game-logo,
-    .mini-logo {
-      display: grid;
-      place-items: center;
-      color: #fff;
-      font-weight: 950;
-      text-shadow: 0 2px 9px rgba(0, 0, 0, 0.25);
-    }
-
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, var(--gold), var(--orange));
-      box-shadow: 0 8px 18px rgba(255, 107, 44, 0.24);
-    }
-
-    .brand-title {
-      min-width: 0;
-    }
-
-    .brand-title b {
-      display: block;
-      font-size: 19px;
-      line-height: 1.1;
-      white-space: nowrap;
-    }
-
-    .brand-title span {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .top-action {
-      width: 38px;
-      height: 38px;
-      border: 0;
-      border-radius: 12px;
-      color: #6b430b;
-      background: rgba(255, 211, 106, 0.36);
-      font-size: 20px;
-      font-weight: 950;
-    }
-
-    .content {
-      position: relative;
-      z-index: 1;
-      padding: 14px 14px 92px;
-    }
-
-    .page {
-      display: none;
-      animation: fade 180ms ease;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero {
-      min-height: 132px;
-      padding: 20px 18px;
-      border-radius: 22px;
-      color: #2b1908;
-      background:
-        linear-gradient(135deg, rgba(255, 211, 106, 0.96), rgba(255, 107, 44, 0.9)),
-        repeating-linear-gradient(45deg, transparent 0 16px, rgba(255, 255, 255, 0.16) 16px 18px);
-      box-shadow: 0 18px 36px rgba(255, 130, 44, 0.2);
-    }
-
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      line-height: 1.12;
-      letter-spacing: 0;
-    }
-
-    .hero p {
-      width: 82%;
-      margin: 0;
-      color: rgba(43, 25, 8, 0.76);
-      font-size: 13px;
-      line-height: 1.45;
-      font-weight: 800;
-    }
-
-    .section-head {
-      margin: 20px 2px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .section-head h2 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.2;
-    }
-
-    .section-head button {
-      border: 0;
-      color: var(--orange);
-      background: transparent;
-      font-size: 12px;
-      font-weight: 950;
-    }
-
-    .logo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .logo-card {
-      min-height: 120px;
-      padding: 11px 8px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .game-logo {
-      width: 66px;
-      height: 66px;
-      border-radius: 18px;
-      font-size: 25px;
-    }
-
-    .logo-card b {
-      max-width: 100%;
-      font-size: 12px;
-      line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .logo-card span {
-      color: var(--orange);
-      font-size: 11px;
-      font-weight: 950;
-    }
-
-    .search-box {
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    .search-box input {
-      width: 100%;
-      height: 46px;
-      padding: 0 42px 0 15px;
-      border: 0;
-      outline: 0;
-      border-radius: 15px;
-      color: var(--ink);
-      background: #fff0ca;
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .search-box button {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 36px;
-      height: 36px;
-      border: 0;
-      border-radius: 12px;
-      color: #fff;
-      background: var(--dark);
-      font-size: 16px;
-      font-weight: 950;
-    }
-
-    .chips {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding-bottom: 4px;
-    }
-
-    .chips::-webkit-scrollbar {
-      display: none;
-    }
-
-    .chip {
-      flex: 0 0 auto;
-      border: 0;
-      min-height: 34px;
-      padding: 0 13px;
-      border-radius: 999px;
-      color: #70460d;
-      background: #ffe7ad;
-      font-size: 12px;
-      font-weight: 950;
-      white-space: nowrap;
-    }
-
-    .chip.active {
-      color: #fff;
-      background: linear-gradient(135deg, var(--gold-2), var(--orange));
-      box-shadow: 0 10px 18px rgba(255, 107, 44, 0.2);
-    }
-
-    .list {
-      display: grid;
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .game-card {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 38% 1fr;
-      min-height: 132px;
-    }
-
-    .cover {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, var(--c1), var(--c2));
-    }
-
-    .cover::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 46%),
-        radial-gradient(circle at 70% 22%, rgba(255, 255, 255, 0.2), transparent 22%);
-    }
-
-    .cover::after {
-      content: attr(data-mark);
-      position: absolute;
-      left: 13px;
-      bottom: 11px;
-      color: #fff;
-      font-size: 30px;
-      font-weight: 950;
-      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.26);
-    }
-
-    .game-info {
-      min-width: 0;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .game-info h3 {
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .game-info p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .tags {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-
-    .tag {
-      padding: 4px 7px;
-      border-radius: 8px;
-      color: #6c430d;
-      background: #ffefcb;
-      font-size: 10px;
-      font-weight: 950;
-    }
-
-    .meta {
-      margin-top: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      color: #4d3412;
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .meta strong {
-      color: var(--orange);
-      font-size: 14px;
-    }
-
-    .primary-btn {
-      border: 0;
-      min-width: 54px;
-      height: 30px;
-      border-radius: 999px;
-      color: #fff;
-      background: var(--dark);
-      font-size: 12px;
-      font-weight: 950;
-    }
-
-    .rank-tabs {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 7px;
-      margin-bottom: 10px;
-    }
-
-    .rank-tab {
-      min-height: 50px;
-      border: 0;
-      border-radius: 14px;
-      color: #6f4b18;
-      background: #fff0cd;
-      font-size: 10px;
-      line-height: 1.16;
-      font-weight: 950;
-    }
-
-    .rank-tab.active {
-      color: #fff;
-      background: linear-gradient(145deg, var(--gold-2), var(--orange));
-    }
-
-    .category-panel {
-      padding: 12px;
-      border-radius: 18px;
-      color: #fff;
-      background: rgba(32, 24, 14, 0.94);
-      margin-bottom: 12px;
-    }
-
-    .category-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 13px;
-      font-weight: 950;
-    }
-
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .category {
-      border: 0;
-      min-height: 36px;
-      border-radius: 11px;
-      color: rgba(255, 255, 255, 0.76);
-      background: rgba(255, 255, 255, 0.1);
-      font-size: 11px;
-      font-weight: 950;
-    }
-
-    .category.active {
-      color: #241609;
-      background: var(--gold);
-    }
-
-    .rank-row {
-      min-height: 66px;
-      padding: 9px 10px;
-      border: 1px solid var(--line);
-      border-radius: 17px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      display: grid;
-      grid-template-columns: 28px 46px 1fr auto;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .rank-no {
-      color: #a16a12;
-      font-size: 15px;
-      font-weight: 950;
-      text-align: center;
-    }
-
-    .mini-logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      font-size: 18px;
-    }
-
-    .rank-copy {
-      min-width: 0;
-    }
-
-    .rank-copy b {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .rank-copy span {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 850;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: block;
-    }
-
-    .trend {
-      padding: 5px 8px;
-      border-radius: 999px;
-      color: #fff;
-      background: var(--green);
-      font-size: 11px;
-      font-weight: 950;
-    }
-
-    .trend.blue { background: var(--blue); }
-    .trend.red { background: var(--red); }
-
-    .empty {
-      padding: 36px 18px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 850;
-    }
-
-    .profile {
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-    }
-
-    .profile h2 {
-      margin: 0 0 8px;
-      font-size: 22px;
-    }
-
-    .profile p {
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      font-weight: 800;
-    }
-
-    .profile-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .profile-stat {
-      min-height: 76px;
-      padding: 12px 8px;
-      border-radius: 16px;
-      text-align: center;
-      background: #fff1ce;
-    }
-
-    .profile-stat b {
-      display: block;
-      color: var(--orange);
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-
-    .profile-stat span {
-      color: #6d4c17;
-      font-size: 11px;
-      font-weight: 950;
-    }
-
-    .tabbar {
-      position: fixed;
-      left: 50%;
-      bottom: max(12px, env(safe-area-inset-bottom));
-      z-index: 20;
-      transform: translateX(-50%);
-      width: min(calc(100vw - 28px), 402px);
-      min-height: 62px;
-      padding: 7px;
-      border-radius: 20px;
-      background: rgba(31, 24, 12, 0.94);
-      box-shadow: 0 16px 30px rgba(21, 14, 6, 0.24);
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 4px;
-    }
-
-    .tab {
-      border: 0;
-      border-radius: 15px;
-      color: rgba(255, 255, 255, 0.62);
-      background: transparent;
-      font-size: 11px;
-      font-weight: 850;
-    }
-
-    .tab b {
-      display: block;
-      color: inherit;
-      font-size: 17px;
-      line-height: 1;
-      margin-bottom: 5px;
-    }
-
-    .tab.active {
-      color: var(--gold);
-      background: rgba(255, 211, 106, 0.12);
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 92px;
-      z-index: 60;
-      transform: translateX(-50%) translateY(10px);
-      max-width: min(360px, calc(100vw - 32px));
-      padding: 10px 14px;
-      border-radius: 999px;
-      color: #fff;
-      background: rgba(31, 24, 12, 0.94);
-      font-size: 13px;
-      font-weight: 900;
-      opacity: 0;
-      pointer-events: none;
-      transition: 180ms ease;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .sheet-mask {
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      background: rgba(23, 20, 15, 0.42);
-    }
-
-    .sheet-mask.show {
-      display: flex;
-    }
-
-    .sheet {
-      width: min(100vw, 430px);
-      max-height: 84vh;
-      padding: 16px 16px calc(18px + env(safe-area-inset-bottom));
-      border-radius: 26px 26px 0 0;
-      background: #fff9ed;
-      box-shadow: 0 -22px 50px rgba(38, 24, 7, 0.18);
-      animation: rise 180ms ease;
-    }
-
-    @keyframes rise {
-      from { transform: translateY(22px); }
-      to { transform: translateY(0); }
-    }
-
-    .sheet-head {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .sheet-head .game-logo {
-      flex: 0 0 auto;
-      width: 68px;
-      height: 68px;
-    }
-
-    .sheet-head h3 {
-      margin: 0 0 5px;
-      font-size: 20px;
-    }
-
-    .sheet-head p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 850;
-    }
-
-    .sheet-desc {
-      margin: 0 0 14px;
-      color: #57401d;
-      font-size: 13px;
-      line-height: 1.55;
-      font-weight: 820;
-    }
-
-    .sheet-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .sheet-actions button {
-      border: 0;
-      height: 44px;
-      border-radius: 14px;
-      font-size: 14px;
-      font-weight: 950;
-    }
-
-    .ghost {
-      color: #5e3c0e;
-      background: #ffe6ae;
-    }
-
-    .solid {
-      color: #fff;
-      background: linear-gradient(135deg, var(--gold-2), var(--orange));
-    }
-
-    .g1 { background: linear-gradient(145deg, #ff7634, #be123c); }
-    .g2 { background: linear-gradient(145deg, #facc15, #15803d); }
-    .g3 { background: linear-gradient(145deg, #60a5fa, #4c1d95); }
-    .g4 { background: linear-gradient(145deg, #fb7185, #7c2d12); }
-    .g5 { background: linear-gradient(145deg, #34d399, #0f766e); }
-    .g6 { background: linear-gradient(145deg, #c084fc, #2563eb); }
-    .g7 { background: linear-gradient(145deg, #f97316, #78350f); }
-    .g8 { background: linear-gradient(145deg, #22d3ee, #1d4ed8); }
-    .g9 { background: linear-gradient(145deg, #f59e0b, #dc2626); }
-
-    @media (min-width: 431px) {
-      .app {
-        min-height: 844px;
-      }
-
-      body {
-        padding: 24px 0;
-      }
-
-      .app {
-        border-radius: 32px;
-      }
-
-      .topbar {
-        border-radius: 32px 32px 0 0;
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1728" />
+  <title>墨光 · 故事宇宙</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="app">
+  <div class="desktop-note">在故事里，遇见另一个世界。</div>
+  <main class="app-shell">
     <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" id="brandMark">游</div>
-        <div class="brand-title">
-          <b id="pageTitle">游戏精选</b>
-          <span id="pageSub">漫画 App 专属推荐</span>
-        </div>
+      <button class="brand" data-go="home" aria-label="返回首页">
+        <span class="brand-mark">墨</span><span>墨光</span>
+      </button>
+      <div class="top-actions">
+        <button class="icon-btn" id="searchBtn" aria-label="搜索">⌕</button>
+        <button class="avatar" data-go="profile" aria-label="个人中心">岚</button>
       </div>
-      <button class="top-action" id="refreshBtn" aria-label="刷新">↻</button>
     </header>
 
-    <div class="content">
-      <section class="page active" id="page-home">
-        <div class="hero">
-          <h1>今日必玩<br>人气新游</h1>
-          <p>根据漫画阅读偏好推荐，快速进入高热度游戏专区。</p>
-        </div>
-        <div class="section-head">
-          <h2>热门 Logo 墙</h2>
-          <button type="button" data-jump="rank">看排行榜</button>
-        </div>
-        <div class="logo-grid" id="logoGrid"></div>
-      </section>
-
-      <section class="page" id="page-discover">
-        <div class="search-box">
-          <input id="searchInput" type="search" placeholder="搜索游戏、题材、分类">
-          <button id="searchBtn" type="button" aria-label="搜索">⌕</button>
-        </div>
-        <div class="chips" id="discoverChips"></div>
-        <div class="list" id="discoverList"></div>
-      </section>
-
-      <section class="page" id="page-rank">
-        <div class="rank-tabs" id="rankTabs"></div>
-        <div class="category-panel">
-          <div class="category-title">
-            <span>二级分类</span>
-            <span id="rankHint">全局销量排名</span>
-          </div>
-          <div class="category-grid" id="categoryGrid"></div>
-        </div>
-        <div class="list" id="rankList"></div>
-      </section>
-
-      <section class="page" id="page-mine">
-        <div class="profile">
-          <h2>我的游戏</h2>
-          <p>这里可以承接漫画 App 账号体系，放最近玩过、预约记录和礼包入口。</p>
-          <div class="profile-grid">
-            <div class="profile-stat"><b id="favCount">0</b><span>已收藏</span></div>
-            <div class="profile-stat"><b>6</b><span>近期浏览</span></div>
-            <div class="profile-stat"><b>3</b><span>可领礼包</span></div>
-          </div>
-        </div>
-        <div class="section-head">
-          <h2>收藏列表</h2>
-          <button type="button" data-jump="discover">继续发现</button>
-        </div>
-        <div class="list" id="favoriteList"></div>
-      </section>
+    <div class="search-panel" id="searchPanel">
+      <span>⌕</span><input id="searchInput" placeholder="搜索小说、漫画、影片" />
+      <button id="closeSearch">取消</button>
     </div>
 
-    <nav class="tabbar" aria-label="底部导航">
-      <button class="tab active" data-page="home"><b>⌂</b>首页</button>
-      <button class="tab" data-page="discover"><b>◆</b>分类</button>
-      <button class="tab" data-page="rank"><b>≡</b>榜单</button>
-      <button class="tab" data-page="mine"><b>♡</b>我的</button>
+    <nav class="category-nav" id="categoryNav" aria-label="内容分类">
+      <button class="active" data-category="recommend">推荐</button>
+      <button data-category="novel">小说</button>
+      <button data-category="comic">漫画</button>
+      <button data-category="film">影片</button>
+    </nav>
+
+    <section id="homePage" class="page active">
+      <div class="subnav" id="subnav">
+        <button class="active">精选</button><button>热榜</button><button>新作</button><button>完结</button>
+      </div>
+      <div id="contentFeed"></div>
+    </section>
+
+    <section id="favoritesPage" class="page">
+      <div class="page-heading">
+        <div><span class="eyebrow">MY LIBRARY</span><h1>我的收藏</h1></div>
+        <button class="text-btn" id="editFavorites">管理</button>
+      </div>
+      <div class="favorite-tabs">
+        <button class="active" data-filter="all">全部 <span id="favCount">0</span></button>
+        <button data-filter="novel">小说</button><button data-filter="comic">漫画</button><button data-filter="film">影片</button>
+      </div>
+      <div id="favoritesList" class="favorites-list"></div>
+    </section>
+
+    <section id="profilePage" class="page">
+      <div class="profile-hero">
+        <div class="profile-row">
+          <div class="big-avatar">岚</div>
+          <div><h1>晚上好，岚</h1><p>在墨光的第 128 天</p></div>
+          <button class="gear">⚙</button>
+        </div>
+        <div class="stats">
+          <div><strong>36</strong><span>已读</span></div><div><strong>12</strong><span>收藏</span></div><div><strong>8.5h</strong><span>本周</span></div>
+        </div>
+      </div>
+      <div class="membership-card">
+        <div class="member-shine"></div>
+        <span class="member-label">INKLIGHT PLUS</span>
+        <h2>把整个故事宇宙<br />装进口袋</h2>
+        <p>全场畅读 · 高清影片 · 抢先更新</p>
+        <button id="openPaywall">立即开通 <span>→</span></button>
+      </div>
+      <div class="menu-list">
+        <button><span>◷</span><b>观看记录</b><i>›</i></button>
+        <button><span>⌁</span><b>离线下载</b><i>›</i></button>
+        <button><span>◈</span><b>阅读偏好</b><i>›</i></button>
+        <button><span>?</span><b>帮助与反馈</b><i>›</i></button>
+      </div>
+    </section>
+
+    <nav class="bottom-nav">
+      <button class="active" data-go="home"><span class="nav-icon">⌂</span><small>首页</small></button>
+      <button data-go="favorites"><span class="nav-icon">♡</span><small>收藏</small><em id="favBadge">0</em></button>
+      <button data-go="profile"><span class="nav-icon">◉</span><small>我的</small></button>
     </nav>
   </main>
 
-  <div class="sheet-mask" id="sheetMask" role="dialog" aria-modal="true">
-    <div class="sheet">
-      <div class="sheet-head">
-        <div class="game-logo" id="sheetLogo"></div>
-        <div>
-          <h3 id="sheetTitle"></h3>
-          <p id="sheetMeta"></p>
+  <div class="modal-backdrop" id="detailModal">
+    <article class="detail-sheet">
+      <button class="sheet-close" data-close="detailModal">×</button>
+      <div id="detailCover" class="detail-cover cover"></div>
+      <div class="detail-content">
+        <span class="eyebrow" id="detailType"></span><h2 id="detailTitle"></h2>
+        <p id="detailMeta"></p>
+        <div class="detail-stats"><span id="detailViews">🔥 68.4万观看</span><span>★ 8.7</span><span id="detailStatus">连载中</span></div>
+        <h3 class="detail-subtitle">简介</h3><p class="description" id="detailDesc"></p>
+        <div class="chapter-card" id="chapterCard"></div>
+        <div class="detail-actions">
+          <button class="primary" id="startReading">开始阅读</button>
+          <button class="save-detail" id="saveDetail">♡</button>
         </div>
+        <div class="comments-head"><h3>评论区 <small id="commentCount">2.3万</small></h3><button id="writeComment">写评论… ✎</button></div>
+        <div class="comment-compose" id="commentCompose">
+          <input id="commentInput" maxlength="80" placeholder="说说你的感受…" />
+          <button id="sendComment">发布</button>
+        </div>
+        <div id="commentsList" class="comments-list"></div>
       </div>
-      <p class="sheet-desc" id="sheetDesc"></p>
-      <div class="tags" id="sheetTags"></div>
-      <div style="height: 14px"></div>
-      <div class="sheet-actions">
-        <button class="ghost" id="favoriteBtn">收藏</button>
-        <button class="solid" id="playBtn">进入游戏</button>
-      </div>
-    </div>
+    </article>
   </div>
 
+  <div class="modal-backdrop" id="paywallModal">
+    <article class="paywall-sheet">
+      <button class="sheet-close" data-close="paywallModal">×</button>
+      <span class="pay-crown">✦</span><span class="eyebrow">INKLIGHT PLUS</span>
+      <h2>让好故事，不被打断</h2>
+      <p class="pay-sub">小说、漫画、影片全场通行</p>
+      <div class="perks"><span>✓ 全库畅读</span><span>✓ 1080P 影片</span><span>✓ 无广告</span></div>
+      <div class="plans">
+        <button class="plan" data-plan="month"><span>连续包月</span><strong>¥18<small>/月</small></strong></button>
+        <button class="plan selected" data-plan="year"><i>最划算</i><span>连续包年</span><strong>¥148<small>/年</small></strong><em>每月仅 ¥12.3</em></button>
+      </div>
+      <button class="pay-button" id="payButton">确认开通 · ¥148/年</button>
+      <small class="terms">开通即代表同意《会员服务协议》 · 可随时取消</small>
+    </article>
+  </div>
   <div class="toast" id="toast"></div>
-
-  <script>
-    const games = [
-      { id: 1, name: "龙影：失落王城", short: "龙影王城", mark: "R", logo: "g1", category: "RPG", tags: ["RPG", "动作", "高画质"], sales: 328, week: 68, rating: 98, rise: 18, days: 24, cover: ["#ff6b2c", "#7c2d12"], desc: "开放世界动作冒险，探索被龙焰覆盖的古代王城，适合喜欢热血漫画和成长线剧情的玩家。" },
-      { id: 2, name: "霓虹漂移计划", short: "霓虹漂移", mark: "N", logo: "g8", category: "竞速", tags: ["竞速", "休闲", "联机"], sales: 212, week: 82, rating: 94, rise: 26, days: 16, cover: ["#2563eb", "#111827"], desc: "赛博都市竞速，短局快感和改装系统适合碎片时间，支持好友排行榜。" },
-      { id: 3, name: "猫灵旅社", short: "猫灵旅社", mark: "Q", logo: "g5", category: "模拟", tags: ["模拟", "剧情", "女性向"], sales: 176, week: 45, rating: 97, rise: 12, days: 38, cover: ["#16a34a", "#f59e0b"], desc: "治愈经营玩法，收集伙伴、布置房间、解锁剧情，节奏轻松适合阅读后休闲。" },
-      { id: 4, name: "深空行动", short: "深空行动", mark: "S", logo: "g6", category: "动作", tags: ["射击", "科幻", "联机"], sales: 98, week: 74, rating: 91, rise: 32, days: 9, cover: ["#8b5cf6", "#2563eb"], desc: "小队制科幻射击，技能配合和赛季任务并重，适合追求操作感的玩家。" },
-      { id: 5, name: "封神奇谭", short: "封神奇谭", mark: "F", logo: "g7", category: "策略", tags: ["国风", "放置", "策略"], sales: 83, week: 38, rating: 89, rise: 8, days: 7, cover: ["#f97316", "#78350f"], desc: "国风神话题材，轻策略阵容搭配，适合作为漫画 App 内的长线推荐。" },
-      { id: 6, name: "魔塔纪元", short: "魔塔纪元", mark: "M", logo: "g3", category: "RPG", tags: ["Roguelike", "冒险", "像素"], sales: 76, week: 51, rating: 93, rise: 21, days: 5, cover: ["#60a5fa", "#4c1d95"], desc: "爬塔冒险和随机流派组合，每次挑战都有新路线，适合榜单飙升入口。" },
-      { id: 7, name: "星域传说", short: "星域传说", mark: "A", logo: "g2", category: "卡牌", tags: ["卡牌", "二次元", "养成"], sales: 69, week: 58, rating: 96, rise: 30, days: 3, cover: ["#facc15", "#15803d"], desc: "角色卡牌养成，剧情章节和漫画番外联动，适合预约和新游推荐。" },
-      { id: 8, name: "契约猎手", short: "契约猎手", mark: "K", logo: "g4", category: "动作", tags: ["动作", "暗黑", "刷装"], sales: 61, week: 34, rating: 88, rise: 14, days: 31, cover: ["#fb7185", "#7c2d12"], desc: "暗黑动作刷装，技能流派明确，适合高转化下载位。" },
-      { id: 9, name: "天命战歌", short: "天命战歌", mark: "T", logo: "g9", category: "卡牌", tags: ["卡牌", "放置", "养成"], sales: 54, week: 29, rating: 90, rise: 6, days: 52, cover: ["#f59e0b", "#dc2626"], desc: "轻量放置卡牌，英雄收集和挂机收益清晰，适合下沉用户入口。" }
-    ];
-
-    const rankTypes = [
-      { key: "sales", label: "全局<br>销量", hint: "全局销量排名" },
-      { key: "week", label: "周下载<br>排名", hint: "周下载量排名" },
-      { key: "days", label: "最新<br>上架", hint: "最新上架" },
-      { key: "rating", label: "好评率", hint: "好评率" },
-      { key: "rise", label: "飙升榜", hint: "飙升榜" }
-    ];
-
-    const categories = ["全部", "RPG", "卡牌", "动作", "策略", "休闲", "竞速", "女性向", "模拟"];
-    let state = {
-      page: "home",
-      discoverCategory: "全部",
-      rankType: "sales",
-      rankCategory: "全部",
-      search: "",
-      activeGame: null,
-      favorites: new Set()
-    };
-
-    const $ = (selector) => document.querySelector(selector);
-    const $$ = (selector) => [...document.querySelectorAll(selector)];
-
-    function formatValue(game, key) {
-      if (key === "sales") return `${game.sales}万销量`;
-      if (key === "week") return `${game.week}万下载`;
-      if (key === "rating") return `${game.rating}%好评`;
-      if (key === "rise") return `+${game.rise}%`;
-      return `${game.days}天前`;
-    }
-
-    function sortGames(list, key) {
-      const sorted = [...list];
-      if (key === "days") return sorted.sort((a, b) => a.days - b.days);
-      return sorted.sort((a, b) => b[key] - a[key]);
-    }
-
-    function filterByCategory(list, category) {
-      if (category === "全部") return list;
-      if (category === "女性向") return list.filter((game) => game.tags.includes("女性向"));
-      if (category === "休闲") return list.filter((game) => game.tags.includes("休闲"));
-      return list.filter((game) => game.category === category || game.tags.includes(category));
-    }
-
-    function filterBySearch(list) {
-      const keyword = state.search.trim().toLowerCase();
-      if (!keyword) return list;
-      return list.filter((game) => {
-        const text = [game.name, game.category, ...game.tags].join(" ").toLowerCase();
-        return text.includes(keyword);
-      });
-    }
-
-    function gameLogo(game, className = "game-logo") {
-      return `<div class="${className} ${game.logo}">${game.mark}</div>`;
-    }
-
-    function tagHtml(tags) {
-      return tags.map((tag) => `<span class="tag">${tag}</span>`).join("");
-    }
-
-    function renderLogoGrid() {
-      $("#logoGrid").innerHTML = games.map((game) => `
-        <button class="logo-card" type="button" data-open="${game.id}">
-          ${gameLogo(game)}
-          <b>${game.short}</b>
-          <span>${game.sales}万</span>
-        </button>
-      `).join("");
-    }
-
-    function renderDiscoverChips() {
-      $("#discoverChips").innerHTML = categories.map((category) => `
-        <button class="chip ${state.discoverCategory === category ? "active" : ""}" type="button" data-discover-category="${category}">
-          ${category}
-        </button>
-      `).join("");
-    }
-
-    function renderGameList() {
-      const list = filterBySearch(filterByCategory(games, state.discoverCategory));
-      $("#discoverList").innerHTML = list.length ? list.map((game, index) => `
-        <article class="game-card" data-open="${game.id}">
-          <div class="cover" data-mark="${String(index + 1).padStart(2, "0")}" style="--c1:${game.cover[0]};--c2:${game.cover[1]}"></div>
-          <div class="game-info">
-            <h3>${game.name}</h3>
-            <p>${game.desc}</p>
-            <div class="tags">${tagHtml(game.tags)}</div>
-            <div class="meta">
-              <span><strong>${game.sales}万</strong> 销量</span>
-              <button class="primary-btn" type="button" data-open="${game.id}">进入</button>
-            </div>
-          </div>
-        </article>
-      `).join("") : `<div class="empty">没有找到相关游戏，换个关键词试试。</div>`;
-    }
-
-    function renderRankTabs() {
-      $("#rankTabs").innerHTML = rankTypes.map((type) => `
-        <button class="rank-tab ${state.rankType === type.key ? "active" : ""}" type="button" data-rank-type="${type.key}">
-          ${type.label}
-        </button>
-      `).join("");
-      $("#rankHint").textContent = rankTypes.find((type) => type.key === state.rankType).hint;
-    }
-
-    function renderCategoryGrid() {
-      $("#categoryGrid").innerHTML = categories.map((category) => `
-        <button class="category ${state.rankCategory === category ? "active" : ""}" type="button" data-rank-category="${category}">
-          ${category}
-        </button>
-      `).join("");
-    }
-
-    function renderRankList() {
-      const list = sortGames(filterByCategory(games, state.rankCategory), state.rankType);
-      $("#rankList").innerHTML = list.map((game, index) => {
-        const trendClass = state.rankType === "days" ? "blue" : state.rankType === "rating" ? "red" : "";
-        return `
-          <article class="rank-row" data-open="${game.id}">
-            <div class="rank-no">${index + 1}</div>
-            ${gameLogo(game, "mini-logo")}
-            <div class="rank-copy">
-              <b>${game.name}</b>
-              <span>${game.category} · ${game.tags.slice(0, 2).join(" · ")} · ${formatValue(game, state.rankType)}</span>
-            </div>
-            <span class="trend ${trendClass}">${formatValue(game, state.rankType).replace("销量", "").replace("下载", "")}</span>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function renderFavorites() {
-      const favoriteGames = games.filter((game) => state.favorites.has(game.id));
-      $("#favCount").textContent = favoriteGames.length;
-      $("#favoriteList").innerHTML = favoriteGames.length ? favoriteGames.map((game, index) => `
-        <article class="rank-row" data-open="${game.id}">
-          <div class="rank-no">${index + 1}</div>
-          ${gameLogo(game, "mini-logo")}
-          <div class="rank-copy">
-            <b>${game.name}</b>
-            <span>${game.category} · ${game.rating}%好评 · ${game.sales}万销量</span>
-          </div>
-          <span class="trend red">已藏</span>
-        </article>
-      `).join("") : `<div class="empty">还没有收藏游戏，点开游戏详情可以收藏。</div>`;
-    }
-
-    function renderAll() {
-      renderLogoGrid();
-      renderDiscoverChips();
-      renderGameList();
-      renderRankTabs();
-      renderCategoryGrid();
-      renderRankList();
-      renderFavorites();
-    }
-
-    function switchPage(page) {
-      state.page = page;
-      $$(".page").forEach((section) => section.classList.toggle("active", section.id === `page-${page}`));
-      $$(".tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.page === page));
-      const titles = {
-        home: ["游戏精选", "漫画 App 专属推荐", "游"],
-        discover: ["发现游戏", "横图列表浏览", "发"],
-        rank: ["游戏榜单", "多维排行筛选", "榜"],
-        mine: ["我的游戏", "收藏与礼包", "我"]
-      };
-      $("#pageTitle").textContent = titles[page][0];
-      $("#pageSub").textContent = titles[page][1];
-      $("#brandMark").textContent = titles[page][2];
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function openSheet(gameId) {
-      const game = games.find((item) => item.id === Number(gameId));
-      if (!game) return;
-      state.activeGame = game;
-      $("#sheetLogo").className = `game-logo ${game.logo}`;
-      $("#sheetLogo").textContent = game.mark;
-      $("#sheetTitle").textContent = game.name;
-      $("#sheetMeta").textContent = `${game.category} · ${game.sales}万销量 · ${game.rating}%好评`;
-      $("#sheetDesc").textContent = game.desc;
-      $("#sheetTags").innerHTML = tagHtml(game.tags);
-      $("#favoriteBtn").textContent = state.favorites.has(game.id) ? "取消收藏" : "收藏";
-      $("#sheetMask").classList.add("show");
-    }
-
-    function closeSheet() {
-      $("#sheetMask").classList.remove("show");
-    }
-
-    let toastTimer = null;
-    function toast(message) {
-      const el = $("#toast");
-      el.textContent = message;
-      el.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.classList.remove("show"), 1600);
-    }
-
-    document.addEventListener("click", (event) => {
-      const tab = event.target.closest("[data-page]");
-      if (tab) switchPage(tab.dataset.page);
-
-      const jump = event.target.closest("[data-jump]");
-      if (jump) switchPage(jump.dataset.jump);
-
-      const discoverCategory = event.target.closest("[data-discover-category]");
-      if (discoverCategory) {
-        state.discoverCategory = discoverCategory.dataset.discoverCategory;
-        renderDiscoverChips();
-        renderGameList();
-      }
-
-      const rankType = event.target.closest("[data-rank-type]");
-      if (rankType) {
-        state.rankType = rankType.dataset.rankType;
-        renderRankTabs();
-        renderRankList();
-      }
-
-      const rankCategory = event.target.closest("[data-rank-category]");
-      if (rankCategory) {
-        state.rankCategory = rankCategory.dataset.rankCategory;
-        renderCategoryGrid();
-        renderRankList();
-      }
-
-      const open = event.target.closest("[data-open]");
-      if (open) openSheet(open.dataset.open);
-    });
-
-    $("#searchInput").addEventListener("input", (event) => {
-      state.search = event.target.value;
-      renderGameList();
-    });
-
-    $("#searchBtn").addEventListener("click", () => {
-      const value = $("#searchInput").value.trim();
-      toast(value ? `已搜索：${value}` : "请输入搜索内容");
-    });
-
-    $("#refreshBtn").addEventListener("click", () => {
-      if (state.page === "rank") {
-        state.rankType = "rise";
-        renderRankTabs();
-        renderRankList();
-        toast("已切换到飙升榜");
-      } else {
-        toast("推荐内容已刷新");
-      }
-    });
-
-    $("#sheetMask").addEventListener("click", (event) => {
-      if (event.target.id === "sheetMask") closeSheet();
-    });
-
-    $("#favoriteBtn").addEventListener("click", () => {
-      if (!state.activeGame) return;
-      if (state.favorites.has(state.activeGame.id)) {
-        state.favorites.delete(state.activeGame.id);
-        toast("已取消收藏");
-      } else {
-        state.favorites.add(state.activeGame.id);
-        toast("已收藏到我的游戏");
-      }
-      $("#favoriteBtn").textContent = state.favorites.has(state.activeGame.id) ? "取消收藏" : "收藏";
-      renderFavorites();
-    });
-
-    $("#playBtn").addEventListener("click", () => {
-      if (!state.activeGame) return;
-      toast(`正在进入：${state.activeGame.short}`);
-      closeSheet();
-    });
-
-    renderAll();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
